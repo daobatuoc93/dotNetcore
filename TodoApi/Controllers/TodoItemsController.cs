@@ -55,14 +55,16 @@ namespace TodoApi.Controllers
         {
             return studentService.DeleteStudent(id);
         }
-        [HttpPost("AddSv")]
-        public ActionResult<Student> AddSv(Student Sv)
+        [HttpPut("Fix/{id}")]
+        public IEnumerable<ActionResult<string>> FixStudent(Student Newstudent)
         {
-            students.Add(Sv);
+            return studentService.FixStudent(Newstudent);
+        }
+        [HttpPost("AddSv")]
+        public IEnumerable<Student> AddSv(Student Sv)
+        {
             //    return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
-            return CreatedAtAction("Find",
-                                   new { id = Sv.Id },
-                                   Sv);
+            return studentService.AddSv(Sv);
         }
 
         [HttpGet]
@@ -86,11 +88,7 @@ namespace TodoApi.Controllers
             return todoItem;
         }
         // Fix: api/TodoItems/Fix/{id}
-        [HttpPut("Fix/{id}")]
-        public IEnumerable<ActionResult<string>> FixStudent(Student Newstudent)
-        {
-            return studentService.FixStudent(Newstudent);
-        }
+       
         // PUT: api/TodoItems/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.

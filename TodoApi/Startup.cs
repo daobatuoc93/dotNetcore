@@ -25,8 +25,9 @@ namespace TodoApi
             services.AddDbContext<TodoContext>(opt =>
                opt.UseInMemoryDatabase("sa"));
             services.AddControllers();
-
             services.AddSingleton<IStudentService>(new StudentService());
+            services.AddMvc();
+            services.AddSingleton<IProductServices>(new ProductServices());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

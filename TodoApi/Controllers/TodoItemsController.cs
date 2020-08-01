@@ -13,26 +13,27 @@ using TodoApi.Service;
 
 namespace TodoApi.Controllers
 {
-    
-    //[Route("")]
-    //[Route("Home")]
-    //[Route("Home/Index")]
+
+    [Route("")]
+    [Route("Home")]
+    [Route("Home/Index")]
     [Route("api/[controller]")]
     [ApiController]
     public class TodoItemsController : ControllerBase
     {
+
         private readonly TodoContext acontext;
-        static List<Student> students = StudentService.students;
         private IStudentService studentService;
-        
+        private IProductServices producService;
         public IEnumerable<Student> Newallsv { get; private set; }
 
-        public TodoItemsController(IStudentService studentService, TodoContext context)
+        public TodoItemsController(IStudentService studentService, TodoContext context, IProductServices producservices )
         {
             this.studentService = studentService;
-            acontext = context;            
+            acontext = context;
+            this.producService = producservices;
         }
-     
+
         [HttpGet("GetAllSV")]
         public IEnumerable<Student> GetAllSV()
         {
@@ -70,7 +71,6 @@ namespace TodoApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
         {
-            
             return await acontext.TodoItems.ToListAsync();
         }
 
@@ -88,7 +88,7 @@ namespace TodoApi.Controllers
             return todoItem;
         }
         // Fix: api/TodoItems/Fix/{id}
-       
+
         // PUT: api/TodoItems/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
@@ -130,7 +130,7 @@ namespace TodoApi.Controllers
             acontext.TodoItems.Add(todoItem);
             await acontext.SaveChangesAsync();
 
-        //    return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
+            //    return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
             return CreatedAtAction(nameof(GetTodoItem), new { id = todoItem.Id }, todoItem);
         }
 

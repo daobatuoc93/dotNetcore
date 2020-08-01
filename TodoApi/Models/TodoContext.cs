@@ -17,7 +17,6 @@ namespace TodoApi.Models
         }
 
         public DbSet<TodoItem> TodoItems { get; set; }
-        public DbSet<DataServiceContext> Datas { get; set; }
         //        public DbSet<BankAccount> BankAccounts { get; set; }
         public class Blog
         {

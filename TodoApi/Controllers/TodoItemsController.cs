@@ -22,76 +22,38 @@ namespace TodoApi.Controllers
     public class TodoItemsController : ControllerBase
     {
         private readonly TodoContext acontext;
-        static List<Student> students = Student.students;
+        static List<Student> students = StudentService.students;
+        private IStudentService studentService;
         
         public IEnumerable<Student> Newallsv { get; private set; }
 
-        public TodoItemsController(TodoContext context)
+        public TodoItemsController(IStudentService studentService, TodoContext context)
         {
+            this.studentService = studentService;
             acontext = context;            
         }
      
         [HttpGet("GetAllSV")]
         public IEnumerable<Student> GetAllSV()
         {
-            foreach (var student in students)
-            {
-                yield return student;
-            }
+            return studentService.GetStudents();
         }
         //
         [HttpGet("Score/{Average}")]
         public IEnumerable<Student> GetDataAverageScore(float average)
-        {            
-            var booleanGroupQuery = from student in students
-                                    group student by student.ExamScores.Average() > average;
-            foreach (var studentGroup in booleanGroupQuery)
-            {
-                if (studentGroup.Key == true)
-                {
-                    foreach (var student in studentGroup)
-                    {
-                        yield return student;
-                    }
-                }
-            }
+        {
+            return studentService.GetScoreAverage(average);
         }
         [HttpGet("Findid/{id}")]
         public IEnumerable<Student> Find(long id)
         {
-            var findId = from student in students
-                         where student.Id == id
-                         select student;
-
-            foreach (var student in findId)
-            {
-                yield return student;
-            }
+            return studentService.Find(id);
 
         }
         [HttpDelete("Delete/{id}")]
         public IEnumerable<Student> DeleteStudent(long id)
         {
-            var CheckifId = from student in students
-                            group student by student.Id == id;
-            foreach (var studentGroup in CheckifId)
-            {
-                if (studentGroup.Key == true)
-                {
-                    foreach (var student in studentGroup)
-                    {
-                        students.Remove(student);
-                    }
-                }
-                else
-                {
-                    foreach(var student in studentGroup)
-                    {
-                        yield return student;
-                    }
-                }
-                    
-            }        
+            return studentService.DeleteStudent(id);
         }
         [HttpPost("AddSv")]
         public ActionResult<Student> AddSv(Student Sv)
@@ -127,28 +89,7 @@ namespace TodoApi.Controllers
         [HttpPut("Fix/{id}")]
         public IEnumerable<ActionResult<string>> FixStudent(Student Newstudent)
         {
-            var CheckifId = from student in students
-                            group student by student.Id == Newstudent.Id;
-            string Complete = "Student has been changed!";
-            string Completechanged = "Finished!";
-            string Isnotneeddedchangingstudent = "Is not needded changing student!";
-            foreach (var studentGroup in CheckifId)
-            {
-                if (studentGroup.Key == true)
-                {
-                    foreach (var student in studentGroup)
-                    {
-                        student.Id = Newstudent.Id;
-                        student.FirstName = Newstudent.FirstName;
-                        student.LastName = Newstudent.LastName;
-                        student.ExamScores = Newstudent.ExamScores;
-                    }
-                    yield return Complete;
-                }
-                else
-                    yield return Isnotneeddedchangingstudent;
-            }
-            yield return Completechanged;
+            return studentService.FixStudent(Newstudent);
         }
         // PUT: api/TodoItems/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
